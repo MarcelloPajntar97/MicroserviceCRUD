@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,7 +19,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('posts', [PostController::class, 'allpost']);
-Route::post('addposts', [PostController::class, 'addpost']);
-Route::post('deletepost', [PostController::class, 'delete']);
-Route::post('updatepost', [PostController::class, 'update']);
+
+
+
+
+Route::post('login', [UserController::class, 'login']);
+Route::post('register', [UserController::class, 'register']);
+
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::get('posts', [PostController::class, 'allpost']);
+    Route::post('addposts', [PostController::class, 'addpost']);
+    Route::post('logout', [UserController::class, 'logout']);
+    Route::post('deletepost', [PostController::class, 'delete']);
+    Route::post('updatepost', [PostController::class, 'update']);
+});
