@@ -11,7 +11,6 @@ class UserController extends Controller
     public function login() {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
           $user = Auth::user();
-          //$success['token'] =  $user->createToken('MyApp')->accessToken;
           return response()->json(['success' => $user->createToken('MyApp')->accessToken], 200);
         }
         else {
@@ -31,11 +30,14 @@ class UserController extends Controller
 
     public function register() {
         $user = new User;
+        $check_mail = User::where('email', request('email'))->exists();
+        if ($check_mail) {
+            return response()->json(['error' =>'email already exist'], 409);
+        }
         $user->name = request('name');
         $user->email = request('email');
         $user->password = bcrypt(request('password'));
         $user->save();
-        //$success['token'] =  $user->createToken('MyApp')->accessToken;
         return response()->json(['success' => $user->createToken('MyApp')->accessToken], 201);
     }
 }
